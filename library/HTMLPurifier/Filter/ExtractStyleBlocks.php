@@ -110,7 +110,10 @@ class HTMLPurifier_Filter_ExtractStyleBlocks extends HTMLPurifier_Filter
         // NB: this must be NON-greedy because if we have
         // <style>foo</style>  <style>bar</style>
         // we must not grab foo</style>  <style>bar
-        $html = preg_replace_callback('#<style(?:\s.*)?>(.*)<\/style>#isU', array($this, 'styleCallback'), $html);
+        $html = (string) $html;
+        $result = preg_replace_callback('#<style(?:\s.*)?>(.*)<\/style>#isU', array($this, 'styleCallback'), $html);
+        // preg_replace_callback() returns null on error; pass input through
+        $html = $result === null ? $html : $result;
         $style_blocks = $this->_styleMatches;
         $this->_styleMatches = array(); // reset
         $context->register('StyleBlocks', $style_blocks); // $context must not be reused
