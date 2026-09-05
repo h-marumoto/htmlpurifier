@@ -30,6 +30,16 @@ class HTMLPurifierTest extends HTMLPurifier_Harness
         $this->assertIdentical('', $this->purifier->purify('foo', $this->config));
     }
 
+    public function test_purify_preFilterReturningNull()
+    {
+        generate_mock_once('HTMLPurifier_Filter');
+        $filter = new HTMLPurifier_FilterMock();
+        $filter->returns('preFilter', null);
+        $filter->returns('postFilter', 'foo');
+        $this->config->set('Filter.Custom', array($filter));
+        $this->assertIdentical('foo', $this->purifier->purify('foo', $this->config));
+    }
+
     public function test_purifyArray()
     {
         $this->assertIdentical(
