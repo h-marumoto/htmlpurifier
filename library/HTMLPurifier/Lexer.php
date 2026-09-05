@@ -248,14 +248,11 @@ class HTMLPurifier_Lexer
      */
     protected static function escapeCDATA($string)
     {
-        $string = (string) $string;
-        $result = preg_replace_callback(
+        return preg_replace_callback(
             '/<!\[CDATA\[(.+?)\]\]>/s',
             array('HTMLPurifier_Lexer', 'CDATACallback'),
             $string
         );
-        // preg_replace_callback() returns null on error; pass input through
-        return $result === null ? $string : $result;
     }
 
     /**
@@ -265,14 +262,11 @@ class HTMLPurifier_Lexer
      */
     protected static function escapeCommentedCDATA($string)
     {
-        $string = (string) $string;
-        $result = preg_replace_callback(
+        return preg_replace_callback(
             '#<!--//--><!\[CDATA\[//><!--(.+?)//--><!\]\]>#s',
             array('HTMLPurifier_Lexer', 'CDATACallback'),
             $string
         );
-        // preg_replace_callback() returns null on error; pass input through
-        return $result === null ? $string : $result;
     }
 
     /**
@@ -341,18 +335,14 @@ class HTMLPurifier_Lexer
 
         // if processing instructions are to removed, remove them now
         if ($config->get('Core.RemoveProcessingInstructions')) {
-            $result = preg_replace('#<\?.+?\?>#s', '', $html);
-            // preg_replace() returns null on error; pass input through
-            $html = $result === null ? $html : $result;
+            $html = preg_replace('#<\?.+?\?>#s', '', $html);
         }
 
         $hidden_elements = $config->get('Core.HiddenElements');
         if ($config->get('Core.AggressivelyRemoveScript') &&
             !($config->get('HTML.Trusted') || !$config->get('Core.RemoveScriptContents')
             || empty($hidden_elements["script"]))) {
-            $result = preg_replace('#<script[^>]*>.*?</script>#i', '', $html);
-            // preg_replace() returns null on error; pass input through
-            $html = $result === null ? $html : $result;
+            $html = preg_replace('#<script[^>]*>.*?</script>#i', '', $html);
         }
 
         return $html;

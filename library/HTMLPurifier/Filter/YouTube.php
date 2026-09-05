@@ -19,10 +19,7 @@ class HTMLPurifier_Filter_YouTube extends HTMLPurifier_Filter
         $pre_regex = '#<object[^>]+>.+?' .
             '(?:http:)?//www.youtube.com/((?:v|cp)/[A-Za-z0-9\-_=]+).+?</object>#s';
         $pre_replace = '<span class="youtube-embed">\1</span>';
-        $html = (string) $html;
-        $result = preg_replace($pre_regex, $pre_replace, $html);
-        // preg_replace() returns null on error; pass input through
-        return $result === null ? $html : $result;
+        return preg_replace($pre_regex, $pre_replace, (string)$html);
     }
 
     /**
@@ -34,10 +31,7 @@ class HTMLPurifier_Filter_YouTube extends HTMLPurifier_Filter
     public function postFilter($html, $config, $context)
     {
         $post_regex = '#<span class="youtube-embed">((?:v|cp)/[A-Za-z0-9\-_=]+)</span>#';
-        $html = (string) $html;
-        $result = preg_replace_callback($post_regex, array($this, 'postFilterCallback'), $html);
-        // preg_replace_callback() returns null on error; pass input through
-        return $result === null ? $html : $result;
+        return preg_replace_callback($post_regex, array($this, 'postFilterCallback'), (string)$html);
     }
 
     /**
